@@ -1,45 +1,49 @@
-import { LoginFlow, RegistrationFlow, UiNode, UiNodeTypeEnum } from "@ory/kratos-client"
-import { useState } from "react"
-import { Input } from "./Input"
+import {
+  LoginFlow,
+  RegistrationFlow,
+  UiNode,
+  UiNodeInputAttributes,
+  UiNodeTypeEnum,
+} from '@ory/kratos-client';
+import { useState } from 'react';
+import { Input } from './Input';
 
-export function Form({ flow }: { flow: (LoginFlow | RegistrationFlow) }) {
+export function Form({ flow }: { flow: LoginFlow | RegistrationFlow }) {
   const [form, setForm] = useState<Record<string, string>>(
     Object.fromEntries(
       flow.ui.nodes
-        .filter((n: any) => n.type === UiNodeTypeEnum.Input)
-        .map((n: any) => {
-          const attrs = n.attributes
-          return [attrs.name, attrs.value ?? ""]
-        })
-    )
-  )
+        .filter((n: UiNode) => n.type === UiNodeTypeEnum.Input)
+        .map((n: UiNode) => {
+          const attrs = n.attributes as UiNodeInputAttributes;
+          return [attrs.name, attrs.value ?? ''];
+        }),
+    ),
+  );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setForm((prev) => ({ ...prev, [name]: value }))
-  }
+    const { name, value } = e.target;
+    setForm(prev => ({ ...prev, [name]: value }));
+  };
 
   return (
     <form method={flow.ui.method} action={flow.ui.action}>
-    <pre>
-        {JSON.stringify(form, null, 2)}
-    </pre>
-      {flow.ui.nodes.map((node: any) => {
+      <pre>{JSON.stringify(form, null, 2)}</pre>
+      {flow.ui.nodes.map((node: UiNode) => {
         if (node.type === UiNodeTypeEnum.Input) {
-          const attrs = node.attributes
+          const attrs = node.attributes as UiNodeInputAttributes;
           return (
             <div key={attrs.name}>
-                <Input
-                    key={(node.attributes as any).name}
-                    node={node}
-                    value={form[(node.attributes as any).name] ?? ""}
-                    onChange={handleChange}
-                />
+              <Input
+                key={attrs.name}
+                node={node}
+                value={form[attrs.name] ?? ''}
+                onChange={handleChange}
+              />
             </div>
-          )
+          );
         }
-        return null
+        return null;
       })}
     </form>
-  )
+  );
 }
