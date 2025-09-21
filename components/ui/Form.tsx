@@ -12,17 +12,26 @@ export function Form({ flow }: { flow: LoginFlow | RegistrationFlow }) {
   const [form, setForm] = useState<Record<string, string>>(
     Object.fromEntries(
       flow.ui.nodes
-        .filter((n: UiNode) => n.type === UiNodeTypeEnum.Input)
-        .map((n: UiNode) => {
+        .filter(n => n.type === UiNodeTypeEnum.Input)
+        .map(n => {
           const attrs = n.attributes as UiNodeInputAttributes;
-          return [attrs.name, attrs.value ?? ''];
+          const val =
+            attrs.type === 'checkbox'
+              ? attrs.value
+                ? 'true'
+                : 'false'
+              : (attrs.value ?? '');
+          return [attrs.name, val];
         }),
     ),
   );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+    setForm(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? (checked ? 'true' : 'false') : value,
+    }));
   };
 
   return (

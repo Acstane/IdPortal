@@ -4,7 +4,6 @@ import { oryAxios } from './axios';
 const baseUrl = process.env.NEXT_PUBLIC_KRATOS_PUBLIC_URL;
 
 const config = new Configuration({ basePath: baseUrl });
-
 export const kratosFrontend = new FrontendApi(config, undefined, oryAxios);
 
 export async function getSession(cookieHeader?: string) {
@@ -15,21 +14,15 @@ export async function getSession(cookieHeader?: string) {
 }
 
 export async function logout(cookieHeader?: string, returnTo?: string) {
-  const logout = await kratosFrontend.createBrowserLogoutFlow({
-    returnTo,
-    cookie: cookieHeader,
-  });
+  const opts =
+    cookieHeader || returnTo ? { cookie: cookieHeader, returnTo } : undefined;
+  const logout = await kratosFrontend.createBrowserLogoutFlow(opts);
   return logout.data;
 }
 
-export async function createBrowserLoginFlow(loginChallenge: string | null) {
-  const flow = await kratosFrontend.createBrowserLoginFlow(
-    loginChallenge
-      ? {
-          loginChallenge,
-        }
-      : {},
-  );
+export async function createBrowserLoginFlow(loginChallenge?: string) {
+  const opts = loginChallenge ? { loginChallenge } : undefined;
+  const flow = await kratosFrontend.createBrowserLoginFlow(opts);
   return flow.data;
 }
 
@@ -38,16 +31,9 @@ export async function getLoginFlow(flowId: string) {
   return flow.data;
 }
 
-export async function createBrowserRegistrationFlow(
-  loginChallenge: string | null,
-) {
-  const flow = await kratosFrontend.createBrowserRegistrationFlow(
-    loginChallenge
-      ? {
-          loginChallenge,
-        }
-      : {},
-  );
+export async function createBrowserRegistrationFlow(loginChallenge?: string) {
+  const opts = loginChallenge ? { loginChallenge } : undefined;
+  const flow = await kratosFrontend.createBrowserRegistrationFlow(opts);
   return flow.data;
 }
 

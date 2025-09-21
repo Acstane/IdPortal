@@ -7,18 +7,20 @@ type Props = {
 };
 
 export function Input({ node, value, onChange }: Props) {
-  const {
-    value: _value,
-    autocomplete,
-    ...rest
-  } = node.attributes as UiNodeInputAttributes;
+  const { type, name, autocomplete, ...rest } =
+    node.attributes as UiNodeInputAttributes;
+
+  const isCheckbox = type === 'checkbox';
 
   return (
     <div>
       <input
         {...rest}
+        type={type}
+        name={name}
         autoComplete={autocomplete || 'off'}
         value={value}
+        checked={isCheckbox && value === 'true'}
         onChange={onChange}
       />
     </div>
