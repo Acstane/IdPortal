@@ -9,7 +9,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
   return (
     <div>
-      <h1>Login</h1>
+      <h1>Logins</h1>
       <LoginFlowClient loginChallenge={login_challenge} flow={flow} />
     </div>
   );

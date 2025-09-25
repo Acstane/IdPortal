@@ -27,8 +27,6 @@ export default function LoginFlowClient({
       if (loginChallenge) return createBrowserLoginFlow(loginChallenge);
       return createBrowserLoginFlow();
     },
-    retry: 2,
-    staleTime: 0,
   });
 
   if (isLoading) {

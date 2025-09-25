@@ -28,7 +28,7 @@ export default function RegisterFlowClient({
     queryFn: () => {
       if (flow) return getRegistrationFlow(flow);
       if (loginChallenge) return createBrowserRegistrationFlow(loginChallenge);
-      return createBrowserRegistrationFlow();
+      return createBrowserRegistrationFlow(undefined);
     },
     retry: 2,
     staleTime: 0,

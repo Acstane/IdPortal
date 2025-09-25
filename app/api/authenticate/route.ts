@@ -10,6 +10,8 @@ export async function GET(req: NextRequest) {
   try {
     const session = await getSession(cookieHeader);
 
+    console.log(session, loginChallenge, cookieHeader);
+
     if (!loginChallenge) {
       const redirectUrl = session?.identity?.id
         ? new URL('/', process.env.NEXT_PUBLIC_ID_PUBLIC_URL).toString()
@@ -31,7 +33,8 @@ export async function GET(req: NextRequest) {
         process.env.NEXT_PUBLIC_ID_PUBLIC_URL,
       ).toString(),
     );
-  } catch {
+  } catch (err) {
+    console.error(err);
     if (loginChallenge) {
       return NextResponse.redirect(
         new URL(
