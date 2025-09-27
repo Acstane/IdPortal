@@ -3,6 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { createBrowserLoginFlow, getLoginFlow } from '@/lib/ory/kratos';
 import { Form } from '../ui/Form';
+import { useEffect } from 'react';
 
 export default function LoginFlowClient({
   loginChallenge,
@@ -29,6 +30,13 @@ export default function LoginFlowClient({
     },
   });
 
+  useEffect(() => {
+    console.log(
+      'LoginFlowClient',
+      JSON.stringify({ loginChallenge, flow, loginFlow }, null, 2),
+    );
+  }, [loginFlow]);
+
   if (isLoading) {
     return (
       <div>
@@ -50,16 +58,33 @@ export default function LoginFlowClient({
   }
 
   return (
-    <div>
-      <h1>Login Page</h1>
-      <p>
-        Please log in to continue to{' '}
-        {loginFlow?.oauth2_login_request?.client?.client_name}
-      </p>
+    <>
+      <div className="text-center mb-8">
+        <h1 className="text-2xl font-bold text-gray-800 mb-2">
+          Sign in to continue
+        </h1>
+        {loginFlow?.oauth2_login_request?.client?.client_name && (
+          <p className="text-gray-600 text-sm">
+            You will be redirected to{' '}
+            <span className="font-semibold gradient-text text-transparent bg-clip-text">
+              {loginFlow.oauth2_login_request.client.client_name}
+            </span>
+          </p>
+        )}
+      </div>
 
       <Form flow={loginFlow!} />
 
-      <pre>{JSON.stringify(loginFlow, null, 2)}</pre>
-    </div>
+      <div className="relative my-6">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-gray-300"></div>
+        </div>
+        <div className="relative flex justify-center text-sm">
+          <span className="px-2 text-gray-500 card-background">
+            Or continue with
+          </span>
+        </div>
+      </div>
+    </>
   );
 }

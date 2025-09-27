@@ -1,0 +1,40 @@
+@import 'tailwindcss';
+
+$card-background: rgba(255, 255, 255);
+
+body {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+}
+
+.card-background {
+  background: $card-background;
+}
+
+.auth-card {
+  backdrop-filter: blur(12px);
+  background: $card-background;
+}
+
+.input-field:focus {
+  box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.2);
+}
+
+.gradient-bg {
+  background: linear-gradient(
+    135deg,
+    rgba(236, 72, 153, 0.8) 0%,
+    rgba(217, 70, 239, 0.8) 100%
+  );
+}
+
+.gradient-text {
+  background: linear-gradient(
+    135deg,
+    rgba(236, 72, 153, 0.8) 0%,
+    rgba(217, 70, 239, 0.8) 100%
+  );
+  display: inline-block;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

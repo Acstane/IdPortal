@@ -8,9 +8,8 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const { login_challenge, flow } = await searchParams;
 
   return (
-    <div>
-      <h1>Logins</h1>
+    <>
       <LoginFlowClient loginChallenge={login_challenge} flow={flow} />
-    </div>
+    </>
   );
 }
