@@ -2,17 +2,29 @@
 
 import { useQuery } from '@tanstack/react-query';
 import {
+  createBrowserLoginFlow,
   createBrowserRegistrationFlow,
+  getLoginFlow,
   getRegistrationFlow,
 } from '@/lib/ory/kratos';
 import { Form } from '../ui/Form';
+import { useEffect } from 'react';
+import { Error } from '../ui/Error';
+import { AxiosError } from 'axios';
+import { ErrorGeneric } from '@ory/kratos-client';
+import Loading from '../ui/Loading';
+import { OAuth2LoginRequest } from '@ory/hydra-client';
+import { useState } from 'react';
+import { getRequestDomain } from '@/lib/ory/form-labels';
 
-export default function RegisterFlowClient({
+export default function LoginFlowClient({
   loginChallenge,
   flow,
+  loginRequest,
 }: {
   loginChallenge?: string;
   flow?: string;
+  loginRequest?: OAuth2LoginRequest;
 }) {
   const {
     data: registrationFlow,
@@ -21,50 +33,54 @@ export default function RegisterFlowClient({
     error,
   } = useQuery({
     queryKey: flow
-      ? ['loginFlow', 'byFlow', flow]
+      ? ['registrationFlow', 'byFlow', flow]
       : loginChallenge
-        ? ['loginFlow', 'byChallenge', loginChallenge]
-        : ['loginFlow', 'local'],
+        ? ['registrationFlow', 'byChallenge', loginChallenge]
+        : ['registrationFlow', 'local'],
     queryFn: () => {
       if (flow) return getRegistrationFlow(flow);
       if (loginChallenge) return createBrowserRegistrationFlow(loginChallenge);
-      return createBrowserRegistrationFlow(undefined);
+      return createBrowserRegistrationFlow();
     },
-    retry: 2,
-    staleTime: 0,
   });
 
-  if (isLoading) {
-    return (
-      <div>
-        <h1>Register Page</h1>
-        <div>Loading registration flow...</div>
-      </div>
-    );
-  }
+  const [Oauth2LoginRequestUrl, setOauth2LoginRequestUrl] = useState(
+    loginRequest?.request_url,
+  );
 
-  if (isError) {
-    return (
-      <div>
-        <h1>Register Page</h1>
-        <div>Error: {error.message}</div>
-        <pre>{JSON.stringify(error, null, 2)}</pre>
-        <button onClick={() => window.location.reload()}>Try again</button>
-      </div>
+  useEffect(() => {
+    console.log(
+      'RegistrationFlowClient',
+      JSON.stringify({ loginChallenge, flow, registrationFlow }, null, 2),
     );
-  }
+
+    setOauth2LoginRequestUrl(
+      registrationFlow?.oauth2_login_request?.request_url ||
+        loginRequest?.request_url,
+    );
+  }, [registrationFlow]);
+
+  if (isLoading) return <Loading />;
+
+  if (isError) return <Error error={error as AxiosError<ErrorGeneric>} />;
 
   return (
-    <div>
-      <h1>Register Page</h1>
-      <p>
-        Please register to continue to{' '}
-        {registrationFlow?.oauth2_login_request?.client?.client_name}
-      </p>
+    <>
+      <div className="text-center mb-8">
+        <h1 className="text-2xl font-bold text-gray-800 mb-2">
+          Create an account to continue
+        </h1>
+        {Oauth2LoginRequestUrl && (
+          <p className="text-gray-600 text-sm">
+            You will be redirected to{' '}
+            <span className="font-semibold gradient-text text-transparent bg-clip-text">
+              {getRequestDomain(Oauth2LoginRequestUrl)}
+            </span>
+          </p>
+        )}
+      </div>
 
       <Form flow={registrationFlow!} />
-
-      <pre>{JSON.stringify(registrationFlow, null, 2)}</pre>
-    </div>
+    </>
   );
 }

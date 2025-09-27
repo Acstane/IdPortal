@@ -38,3 +38,8 @@ body {
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
+.checkbox:checked {
+  background-color: #d946ef;
+  border-color: #d946ef;
+}

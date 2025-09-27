@@ -1,4 +1,4 @@
-import { Configuration, FrontendApi } from '@ory/kratos-client';
+import { Configuration, FrontendApi, IdentityApi } from '@ory/kratos-client';
 import { oryAxios } from './axios';
 
 const baseUrl =
@@ -6,6 +6,13 @@ const baseUrl =
 
 const config = new Configuration({ basePath: baseUrl });
 export const kratosFrontend = new FrontendApi(config, undefined, oryAxios);
+
+const kratosIdentity = new IdentityApi(config, undefined, oryAxios);
+
+export async function getIdentity(id: string) {
+  const identity = await kratosIdentity.getIdentity({ id });
+  return identity.data;
+}
 
 export async function getSession(cookieHeader?: string) {
   const session = await kratosFrontend.toSession(undefined, {
@@ -35,7 +42,7 @@ export async function getLoginFlow(flowId: string) {
 }
 
 export async function createBrowserRegistrationFlow(loginChallenge?: string) {
-  const opts = { loginChallenge, refresh: true };
+  const opts = { loginChallenge };
   const flow = await kratosFrontend.createBrowserRegistrationFlow(opts);
   return flow.data;
 }

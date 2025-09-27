@@ -1,9 +1,10 @@
-import { Configuration, OAuth2Api } from '@ory/hydra-client';
+import { Configuration, OAuth2Api, JwkApi } from '@ory/hydra-client';
 import { oryAxios } from './axios';
 
 const baseUrl = process.env.HYDRA_ADMIN_URL;
 const config = new Configuration({ basePath: baseUrl });
 export const hydraOAuth2 = new OAuth2Api(config, undefined, oryAxios);
+export const hydraJwk = new JwkApi(config, undefined, oryAxios);
 
 export async function acceptLoginRequest(challenge: string, subject: string) {
   try {
@@ -64,6 +65,18 @@ export async function rejectConsentRequest(consentChallenge: string) {
     return data;
   } catch (err) {
     console.error('Failed to reject consent request:', err);
+    throw err;
+  }
+}
+
+export async function getOAuth2LoginRequest(loginChallenge: string) {
+  try {
+    const { data } = await hydraOAuth2.getOAuth2LoginRequest({
+      loginChallenge,
+    });
+    return data;
+  } catch (err) {
+    console.error('Failed to get login request:', err);
     throw err;
   }
 }

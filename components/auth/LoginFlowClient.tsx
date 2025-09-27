@@ -4,6 +4,11 @@ import { useQuery } from '@tanstack/react-query';
 import { createBrowserLoginFlow, getLoginFlow } from '@/lib/ory/kratos';
 import { Form } from '../ui/Form';
 import { useEffect } from 'react';
+import { Error } from '../ui/Error';
+import { AxiosError } from 'axios';
+import { ErrorGeneric } from '@ory/kratos-client';
+import Loading from '../ui/Loading';
+import { getRequestDomain } from '@/lib/ory/form-labels';
 
 export default function LoginFlowClient({
   loginChallenge,
@@ -37,25 +42,9 @@ export default function LoginFlowClient({
     );
   }, [loginFlow]);
 
-  if (isLoading) {
-    return (
-      <div>
-        <h1>Login Page</h1>
-        <div>Loading login flow...</div>
-      </div>
-    );
-  }
+  if (isLoading) return <Loading />;
 
-  if (isError) {
-    return (
-      <div>
-        <h1>Login Page</h1>
-        <div>Error: {error.message}</div>
-        <pre>{JSON.stringify(error, null, 2)}</pre>
-        <button onClick={() => window.location.reload()}>Try again</button>
-      </div>
-    );
-  }
+  if (isError) return <Error error={error as AxiosError<ErrorGeneric>} />;
 
   return (
     <>
@@ -67,24 +56,13 @@ export default function LoginFlowClient({
           <p className="text-gray-600 text-sm">
             You will be redirected to{' '}
             <span className="font-semibold gradient-text text-transparent bg-clip-text">
-              {loginFlow.oauth2_login_request.client.client_name}
+              {getRequestDomain(loginFlow.oauth2_login_request.request_url)}
             </span>
           </p>
         )}
       </div>
 
       <Form flow={loginFlow!} />
-
-      <div className="relative my-6">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-gray-300"></div>
-        </div>
-        <div className="relative flex justify-center text-sm">
-          <span className="px-2 text-gray-500 card-background">
-            Or continue with
-          </span>
-        </div>
-      </div>
     </>
   );
 }
