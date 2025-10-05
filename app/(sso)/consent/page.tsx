@@ -7,13 +7,7 @@ import { OAuth2ConsentRequest } from '@ory/hydra-client';
 import { LuUserRound } from 'react-icons/lu';
 import { MdLogout } from 'react-icons/md';
 
-import {
-  BiUser,
-  BiMailSend,
-  BiIdCard,
-  BiKey,
-  BiBarChart,
-} from 'react-icons/bi';
+import { BiUser, BiMailSend, BiIdCard, BiKey } from 'react-icons/bi';
 
 import { FaChartBar } from 'react-icons/fa';
 
@@ -107,9 +101,9 @@ export default async function ConsentPage({ searchParams }: ConsentPageProps) {
           </div>
           <div>
             <p className="text-sm font-medium text-gray-800">
-              {name.first +
+              {name?.first +
                 ' ' +
-                (name.middle ? `${name.middle} ${name.last}` : name.last)}
+                (name?.middle ? `${name?.middle} ${name?.last}` : name?.last)}
             </p>
             <p className="text-xs text-gray-500">{email}</p>
           </div>

@@ -1,4 +1,4 @@
-import RegisterFlowClient from '@/components/auth/RegisterFlowClient';
+import FlowClient, { FlowType } from '@/components/auth/FlowClient';
 import { getOAuth2LoginRequest } from '@/lib/ory/hydra';
 
 interface RegisterPageProps {
@@ -10,17 +10,17 @@ export default async function RegisterPage({
 }: RegisterPageProps) {
   const { login_challenge, flow } = await searchParams;
 
-  const loginRequest =
-    login_challenge && login_challenge !== 'undefined'
-      ? await getOAuth2LoginRequest(login_challenge)
-      : undefined;
+  const oauth2LoginRegister = login_challenge
+    ? await getOAuth2LoginRequest(login_challenge)
+    : undefined;
 
   return (
     <>
-      <RegisterFlowClient
+      <FlowClient
+        flowType={'registration' as FlowType}
         loginChallenge={login_challenge}
         flow={flow}
-        loginRequest={loginRequest}
+        oauth2LoginRegister={oauth2LoginRegister}
       />
     </>
   );

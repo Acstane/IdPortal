@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { BiSolidError } from 'react-icons/bi';
 
 import { ErrorGeneric, FlowError } from '@ory/kratos-client';
-import { useEffect, useState } from 'react';
 
 export function Error({
   error,

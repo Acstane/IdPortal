@@ -1,6 +1,6 @@
 'use client';
 
-import { ErrorGeneric, FlowError } from '@ory/kratos-client';
+import { FlowError } from '@ory/kratos-client';
 import * as React from 'react';
 import { getFlowError } from '@/lib/ory/kratos';
 import Loading from '@/components/ui/Loading';

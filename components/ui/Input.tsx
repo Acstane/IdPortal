@@ -16,7 +16,7 @@ type Props = {
   node: UiNode;
   value: string;
   customButtonClassName?: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>, node: UiNode) => void;
 };
 
 export function Input({
@@ -67,7 +67,7 @@ export function Input({
               id={name}
               value={value || 'true'}
               checked={value === 'true'}
-              onChange={onChange}
+              onChange={e => onChange(e, node)}
               className="focus:ring-fuchsia-500 h-4 w-4 text-fuchsia-600 border-gray-300 rounded checkbox"
             />
             <label
@@ -86,6 +86,7 @@ export function Input({
             className={customButtonClassName}
             value={value}
             onClick={handleClick}
+            type={type}
           >
             {icon}
             {getFormLabel(node)}
@@ -112,7 +113,7 @@ export function Input({
             name={name}
             autoComplete={autocomplete}
             value={value}
-            onChange={onChange}
+            onChange={e => onChange(e, node)}
             placeholder={getFormPlaceholder(node)}
             className="w-full px-4 py-3 rounded-lg border border-gray-300 input-field focus:outline-none focus:border-fuchsia-500 transition"
           />
@@ -133,7 +134,7 @@ export function Input({
             </label>
             <a
               href="#"
-              className="text-xs gradient-text text-transparent bg-clip-text"
+              className="text-xs text-fuchsia-600 hover:text-fuchsia-700"
             >
               Forgot password?
             </a>
@@ -148,6 +149,14 @@ export function Input({
           </label>
         ))}
       <div className="relative">{getElement()}</div>
+
+      {node.messages && node.messages.length > 0 && (
+        <div className="mt-2 text-sm text-red-600">
+          {node.messages.map(m => (
+            <p key={m.id}>{m.text}</p>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

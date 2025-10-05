@@ -1,4 +1,5 @@
-import LoginFlowClient from '@/components/auth/LoginFlowClient';
+import FlowClient, { FlowType } from '@/components/auth/FlowClient';
+import { getOAuth2LoginRequest } from '@/lib/ory/hydra';
 
 interface LoginPageProps {
   searchParams: Promise<{ login_challenge?: string; flow?: string }>;
@@ -7,9 +8,18 @@ interface LoginPageProps {
 export default async function LoginPage({ searchParams }: LoginPageProps) {
   const { login_challenge, flow } = await searchParams;
 
+  const oauth2LoginRegister = login_challenge
+    ? await getOAuth2LoginRequest(login_challenge)
+    : undefined;
+
   return (
     <>
-      <LoginFlowClient loginChallenge={login_challenge} flow={flow} />
+      <FlowClient
+        flowType={'login' as FlowType}
+        loginChallenge={login_challenge}
+        flow={flow}
+        oauth2LoginRegister={oauth2LoginRegister}
+      />
     </>
   );
 }
